@@ -1,0 +1,62 @@
+/* book.css */
+
+body {
+  margin-top: 90px;
+  background-color: #f4f6f8;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h2 {
+  font-weight: bold;
+  color: #343a40;
+}
+
+.form-section {
+  background-color: #ffffff;
+}
+
+.search-section input {
+  font-size: 1rem;
+}
+
+.book-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.book-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+}
+
+.title-spacing {
+  margin-top: 50px; /* atau padding-top: 50px; */
+}
+
+.card-title {
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
