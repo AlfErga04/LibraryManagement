@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Middleware\AktivasiEmail;
+use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AktivasiEmail;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -12,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/activate/{token}', [AuthController::class, 'activate']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/', [BookController::class, 'index']);
+Route::get('/book/{id}', [BookController::class, 'detailBuku']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);

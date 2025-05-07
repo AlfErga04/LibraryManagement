@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('tahun_terbit');
             $table->integer('stok')->default(0);
             $table->text('description');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
             $table->timestamps();
         });
     }
