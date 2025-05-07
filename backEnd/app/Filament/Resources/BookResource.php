@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
+use App\Filament\Resources\BookResource\Pages;
+use App\Filament\Resources\BookResource\RelationManagers;
+use App\Models\Book;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,39 +13,43 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class BookResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Book::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?string $navigationGroup = 'Library';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('judul')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('address')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('role')
+                Forms\Components\FileUpload::make('image')
+                    ->image()
                     ->required(),
-                Forms\Components\Toggle::make('is_active')
+                Forms\Components\TextInput::make('isbn')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('penulis')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('penerbit')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\DatePicker::make('tahun_terbit')
                     ->required(),
+                Forms\Components\TextInput::make('stok')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
+                Forms\Components\Textarea::make('description')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\select::make('category.name')
+                    ->relationship('category', 'name')
             ]);
     }
 
@@ -53,17 +57,24 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('judul')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\TextColumn::make('isbn')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('penulis')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
+                Tables\Columns\TextColumn::make('penerbit')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('role'),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('tahun_terbit')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('stok')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('Kategori')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -96,9 +107,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListBooks::route('/'),
+            'create' => Pages\CreateBook::route('/create'),
+            'edit' => Pages\EditBook::route('/{record}/edit'),
         ];
     }
 }
