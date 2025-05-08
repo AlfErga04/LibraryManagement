@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class);
+    }
 }
