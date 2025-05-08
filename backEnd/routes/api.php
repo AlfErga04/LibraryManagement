@@ -20,4 +20,4 @@ Route::get('/book/{id}', [BookController::class, 'detailBuku']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     //untuk fitur yang harus login dulu tambah routenya disini guys
-});
+}); 

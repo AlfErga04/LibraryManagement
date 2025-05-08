@@ -1,12 +1,43 @@
 import React, { useState } from "react";
 
 function SignUp() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setMessage("Password dan konfirmasi password tidak cocok.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Laravel biasa kirim 'message' saat gagal
+        throw new Error(data.message || "Registrasi gagal.");
+      }
+
+      setMessage("Registrasi berhasil. Silakan cek email untuk aktivasi.");
+    } catch (error) {
+      setMessage(error.message);
+    }
     // Proses sign up, bisa menggunakan API atau simulasi sign up di sini
     console.log("Sign Up Submitted", email, password, confirmPassword);
   };
