@@ -38,6 +38,6 @@ class PengembalianController extends Controller
         $book->stok += 1;
         $book->save();
 
-        return response()->json(['message' => 'Buku berhasil dikembalikan',]);
+        return response()->json(['status' => 'success','message' => 'Buku berhasil dikembalikan',]);
     }
 }

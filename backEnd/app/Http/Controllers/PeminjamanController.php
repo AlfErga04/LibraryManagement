@@ -35,7 +35,7 @@ class PeminjamanController extends Controller
 
         $book->decrement('stok');
 
-        return response()->json(['message' => 'Berhasil meminjam buku'], 201);
+        return response()->json(['status' => 'success','message' => 'Berhasil meminjam buku'], 201);
     }
 
     public function riwayatUser() {
