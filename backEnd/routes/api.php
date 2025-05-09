@@ -25,6 +25,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/pinjam', [PeminjamanController::class, 'store']);
     Route::post('/pengembalian/{peminjaman_id}', [PengembalianController::class, 'store'])->middleware([Pengembalian::class]);
     Route::get('/peminjaman/riwayat', [PeminjamanController::class, 'riwayatUser']);
-    //untuk fitur yang harus login dulu tambah routenya disini guys
+    
 
 });
