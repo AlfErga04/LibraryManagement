@@ -5,6 +5,8 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -16,7 +18,7 @@ function SignUp() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/register", {
+      const response = await fetch("http://localhost:8000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,13 +26,15 @@ function SignUp() {
         body: JSON.stringify({
           name,
           email,
-          password
+          password,
+          address,
+          phone,
         }),
       });
+
       const data = await response.json();
 
       if (!response.ok) {
-        // Laravel biasa kirim 'message' saat gagal
         throw new Error(data.message || "Registrasi gagal.");
       }
 
@@ -38,14 +42,26 @@ function SignUp() {
     } catch (error) {
       setMessage(error.message);
     }
-    // Proses sign up, bisa menggunakan API atau simulasi sign up di sini
-    console.log("Sign Up Submitted", email, password, confirmPassword);
+
+    console.log("Sign Up Submitted", name, email, password, address, phone);
   };
 
   return (
     <div className="container">
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">Name</label>
+          <input
+            type="text"
+            className="form-control"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Email</label>
           <input
@@ -57,6 +73,31 @@ function SignUp() {
             required
           />
         </div>
+
+        <div className="mb-3">
+          <label htmlFor="address" className="form-label">Address</label>
+          <input
+            type="text"
+            className="form-control"
+            id="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="phone" className="form-label">Phone</label>
+          <input
+            type="text"
+            className="form-control"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+        </div>
+
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
           <input
@@ -68,6 +109,7 @@ function SignUp() {
             required
           />
         </div>
+
         <div className="mb-3">
           <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
           <input
@@ -79,6 +121,9 @@ function SignUp() {
             required
           />
         </div>
+
+        {message && <div className="alert alert-info mt-3">{message}</div>}
+
         <button type="submit" className="btn btn-primary">Sign Up</button>
       </form>
     </div>
