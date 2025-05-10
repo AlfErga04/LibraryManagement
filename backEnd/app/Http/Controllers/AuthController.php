@@ -75,7 +75,7 @@ class AuthController extends Controller
             ]);
         }
         if ($user->is_active !== 1) {
-            return response()->json(['message' => 'Akun belum diaktivasi!']);
+            return response()->json(['status' => 'error','message' => 'Akun belum diaktivasi!'], 401);
         }
         $token = $user->createToken('login user ' . $user->name)->plainTextToken;
         return response()->json([
