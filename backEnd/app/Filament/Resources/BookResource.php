@@ -108,8 +108,8 @@ class BookResource extends Resource
     {
         return [
             'index' => Pages\ListBooks::route('/'),
-            'create' => Pages\CreateBook::route('/create'),
-            'edit' => Pages\EditBook::route('/{record}/edit'),
+            // 'create' => Pages\CreateBook::route('/create'),
+            // 'edit' => Pages\EditBook::route('/{record}/edit'),
         ];
     }
 }
