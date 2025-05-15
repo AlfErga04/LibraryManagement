@@ -17,7 +17,8 @@ use App\Http\Controllers\PengembalianController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/activate/{token}', [AuthController::class, 'activate']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/', [BookController::class, 'index']);
+Route::get('/book', [BookController::class, 'index']);
+Route::get('/book/trending', [BookController::class, 'trending']);
 Route::get('/book/{id}', [BookController::class, 'detailBuku']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
