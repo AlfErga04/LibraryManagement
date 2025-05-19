@@ -8,7 +8,9 @@ use App\Http\Middleware\AktivasiEmail;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\ResetPasswordController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -20,6 +22,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/book', [BookController::class, 'index']);
 Route::get('/book/trending', [BookController::class, 'trending']);
 Route::get('/book/{id}', [BookController::class, 'detailBuku']);
+Route::post('/lupa-password', [LupaPasswordController::class, 'sendResetLink']);
+Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
