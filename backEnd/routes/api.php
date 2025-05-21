@@ -11,6 +11,7 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\Payment\MidtransController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -30,6 +31,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/pinjam', [PeminjamanController::class, 'store']);
     Route::post('/pengembalian/{peminjaman_id}', [PengembalianController::class, 'store'])->middleware([Pengembalian::class]);
     Route::get('/peminjaman/riwayat', [PeminjamanController::class, 'riwayatUser']);
-    
+    Route::get('/pembayaran/snap-token/{pengembalian_id}', [MidtransController::class, 'generateSnapToken']);
 
 });
