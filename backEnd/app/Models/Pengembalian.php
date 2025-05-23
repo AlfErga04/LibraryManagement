@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Peminjaman;
 use Illuminate\Database\Eloquent\Model;
 
 class Pengembalian extends Model
@@ -12,4 +13,9 @@ class Pengembalian extends Model
         'denda',
         'peminjaman_id'
     ];
+
+    public function peminjaman()
+    {
+        return $this->belongsTo(Peminjaman::class);
+    }
 }
