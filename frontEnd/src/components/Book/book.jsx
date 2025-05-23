@@ -1,162 +1,80 @@
-import React, { useState } from 'react';
-import initialBooks from './books';
-import './book.css';
+import { useState } from "react";
+import { BookModal } from "@/components/item/book-modal";
+import initialBooks from "./books";
 
-const Book = () => {
-  const [books, setBooks] = useState(initialBooks);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [author, setAuthor] = useState('');
-  const [year, setYear] = useState('');
-  const [image, setImage] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleAddBook = (e) => {
-    e.preventDefault();
-    const newBook = {
-      id: books.length + 1,
-      title,
-      description,
-      author,
-      year,
-      image,
-    };
-    setBooks([...books, newBook]);
-    setTitle('');
-    setDescription('');
-    setAuthor('');
-    setYear('');
-    setImage('');
-  };
+export default function Book() {
+  const [books] = useState(initialBooks);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBook, setSelectedBook] = useState(null);
 
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleResetSearch = () => {
-    setSearchTerm('');
+    setSearchTerm("");
   };
 
   return (
-    <div className="container mt-5">
-  <h2 className="mb-4 text-center title-spacing">📚 Daftar Buku</h2>
+    <div className="container mx-auto mt-12 px-4">
+      <h2 className="text-center text-3xl font-serif mb-8">📚 Daftar Buku</h2>
 
       {/* Pencarian */}
-      <div className="search-section mb-5 p-4 shadow-sm bg-light rounded">
-        <div className="row align-items-center">
-          <div className="col-md-9">
-            <input
-              type="text"
-              className="form-control form-control-lg"
-              placeholder="🔍 Cari buku berdasarkan judul..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div className="col-md-3 mt-2 mt-md-0">
-            <button
-              className="btn btn-outline-danger w-100"
-              onClick={handleResetSearch}
-              disabled={!searchTerm}
-            >
-              Reset Pencarian
-            </button>
-          </div>
+      <div className="bg-gray-100 p-6 rounded-lg shadow-sm mb-8">
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <input
+            type="text"
+            className="flex-1 rounded-lg border px-4 py-2 shadow-sm text-lg"
+            placeholder="🔍 Cari buku berdasarkan judul..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            className="bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 disabled:opacity-50 w-full md:w-auto"
+            onClick={handleResetSearch}
+            disabled={!searchTerm}
+          >
+            Reset Pencarian
+          </button>
         </div>
       </div>
 
-      {/* Form Tambah Buku */}
-      <div className="form-section p-4 shadow-sm bg-white rounded mb-5">
-        <h4 className="mb-3">➕ Tambah Buku Baru</h4>
-        <form onSubmit={handleAddBook} className="row g-3">
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Judul"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Deskripsi"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Penulis"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              required
-            />
-          </div>
-          <div className="col-md-3">
-            <input
-              type="number"
-              className="form-control"
-              placeholder="Tahun"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              required
-            />
-          </div>
-          <div className="col-md-6">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="URL Gambar"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
-            />
-          </div>
-          <div className="col-md-3">
-            <button type="submit" className="btn btn-primary w-100">
-              Simpan Buku
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Daftar Buku */}
-      <div className="row">
+      {/* Grid Buku */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredBooks.length > 0 ? (
           filteredBooks.map((book) => (
-            <div className="col-md-4 mb-4" key={book.id}>
-              <div className="card book-card h-100 shadow-sm rounded">
-                <img
-                  src={book.image}
-                  className="card-img-top"
-                  alt={book.title}
-                  style={{ height: '250px', objectFit: 'cover' }}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">{book.title}</h5>
-                  <p className="card-text">{book.description}</p>
-                </div>
-                <div className="card-footer text-muted">
-                  {book.author} - {book.year}
-                </div>
+            <div
+              key={book.id}
+              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer"
+              onClick={() => setSelectedBook(book)}
+            >
+              <img
+                src={book.image}
+                alt={book.title}
+                className="h-64 w-full object-cover"
+              />
+              <div className="p-4">
+                <h5 className="text-xl font-semibold mb-2">{book.title}</h5>
+                <p className="text-sm text-gray-600 line-clamp-3">{book.description}</p>
+              </div>
+              <div className="bg-gray-100 text-gray-500 text-sm px-4 py-2">
+                {book.author} - {book.year}
               </div>
             </div>
           ))
         ) : (
-          <p className="text-muted text-center">
+          <p className="text-gray-500 text-center col-span-full">
             Tidak ada buku yang cocok dengan pencarian.
           </p>
         )}
       </div>
+
+      {/* Modal Detail Buku */}
+      <BookModal
+        book={selectedBook}
+        isOpen={!!selectedBook}
+        onClose={() => setSelectedBook(null)}
+      />
     </div>
   );
-};
-
-export default Book;
+}

@@ -1,20 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { useState } from "react"
-import { BookModal } from "@/components/item/book-modal"
 
 export function TrendingBooks({ books }) {
-  const [selectedBook, setSelectedBook] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const openModal = (book) => {
-    setSelectedBook(book)
-    setIsModalOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
-  }
-
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -26,19 +12,17 @@ export function TrendingBooks({ books }) {
         </div>
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {books.map((book) => (
-            <BookCard key={book.id} book={book} onClick={() => openModal(book)} />
+            <BookCard key={book.id} book={book} />
           ))}
         </div>
       </div>
-      <BookModal book={selectedBook} isOpen={isModalOpen} onClose={closeModal} />
     </section>
   );
 }
 
-function BookCard({ book, onClick }) {
+function BookCard({ book }) {
   return (
-    <Card className="group overflow-hidden rounded-xl border-none transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shadow-lg h-full cursor-pointer"
-    onClick={onClick}>
+    <Card className="group overflow-hidden rounded-xl border-none transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shadow-lg h-full">
       <div className="relative h-56 overflow-hidden">
         <img
           src={book.image || "/placeholder.svg"}

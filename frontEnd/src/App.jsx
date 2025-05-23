@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
+import Header from "./components/Header/header";
 import Home from "./components/Book/Home";
 import Book from "./components/Book/book";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,11 +9,11 @@ import "./App.css";
 import Login from "./components/Login/login";
 import Footer from "./components/Footer/footer";
 import SignUp from "./components/SignUp/SignUp";
-import BorrowHistory from "./components/BorrowHistory/BorrowHistory";
-import { useEffect, useState } from "react";
 
 
-
+//book detail
+import BookDetail from "./components/Book/book-detail";
+// routes book detail <Route path="/book/:id" element={<BookDetail />} />
 
 function App() {
   return (
@@ -40,13 +40,6 @@ function App() {
           {/* Halaman Book */}
           <Route path="/book" element={<Book />} />
 
-          {/* Halaman Login */}
-          <Route path="/login" element={<Login />} />
-
-          {/* Halaman Sign Up */}
-          <Route path="/signup" element={<SignUp />} />
-
-          <Route path="/BorrowHistory" element={<BorrowHistory />} />
         </Routes>
         <Footer />
       </div>
