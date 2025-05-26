@@ -2,13 +2,7 @@ import React from "react";
 import { Offcanvas, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn }) {
-  const userProfile = {
-    name: "John Doe",
-    userId: "12345",
-    profilePicture: "https://randomuser.me/api/portraits/men/45.jpg",
-  };
-
+function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn, user }) {
   return (
     <Offcanvas show={showSidebar} onHide={handleSidebarClose} placement="end" className="bg-light">
       <Offcanvas.Header closeButton>
@@ -20,50 +14,34 @@ function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn })
         <Nav className="flex-column">
           {!isLoggedIn ? (
             <>
-              <Nav.Link
-                onClick={() => {
-                  setIsLoggedIn(true);
-                  handleSidebarClose();
-                }}
-                className="text-primary fw-semibold"
-              >
-                Login
-              </Nav.Link>
-              <Nav.Link as={Link} to="/signup" onClick={handleSidebarClose} className="text-primary fw-semibold">
-                Sign Up
-              </Nav.Link>
+              <Nav.Link as={Link} to="/login" onClick={handleSidebarClose}>Login</Nav.Link>
+              <Nav.Link as={Link} to="/register" onClick={handleSidebarClose}>Sign Up</Nav.Link>
             </>
           ) : (
             <>
               <div className="d-flex align-items-center mb-3">
                 <img
-                  src={userProfile.profilePicture}
+                  src={user?.profile_picture || "https://via.placeholder.com/40"}
                   alt="Profile"
                   className="rounded-circle"
                   style={{ width: "40px", height: "40px", marginRight: "10px" }}
                 />
                 <div>
-                  <div className="fw-bold">{userProfile.name}</div>
-                  <div className="text-muted">ID: {userProfile.userId}</div>
+                  <div className="fw-bold">{user?.name}</div>
+                  <div className="text-muted">Email: {user?.email}</div>
                 </div>
               </div>
 
-              <Nav.Link as={Link} to="/profile" onClick={handleSidebarClose} className="text-primary fw-semibold">
-                👤 Profil
-              </Nav.Link>
-              <Nav.Link as={Link} to="/history" onClick={handleSidebarClose} className="text-primary fw-semibold">
-                📚 Riwayat Peminjaman
-              </Nav.Link>
-              <Nav.Link as={Link} to="/due-date" onClick={handleSidebarClose} className="text-primary fw-semibold">
-                ⏰ Jadwal Pengembalian
-              </Nav.Link>
-              <Nav.Link as={Link} to="/favorites" onClick={handleSidebarClose} className="text-primary fw-semibold">
-                ⭐ Favorit
-              </Nav.Link>
+              <Nav.Link as={Link} to="/profile" onClick={handleSidebarClose}>👤 Profil</Nav.Link>
+              <Nav.Link as={Link} to="/history" onClick={handleSidebarClose}>📚 Riwayat Peminjaman</Nav.Link>
+              <Nav.Link as={Link} to="/due-date" onClick={handleSidebarClose}>⏰ Jadwal Pengembalian</Nav.Link>
+              <Nav.Link as={Link} to="/favorites" onClick={handleSidebarClose}>⭐ Favorit</Nav.Link>
 
               <Nav.Link
                 onClick={() => {
                   setIsLoggedIn(false);
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("user");
                   handleSidebarClose();
                 }}
                 className="text-danger fw-semibold"
