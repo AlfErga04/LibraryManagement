@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import './login.css';
+import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login({ setIsLoggedIn, setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,10 +17,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -27,16 +26,19 @@ function Login() {
         throw new Error(data.message || "Login gagal.");
       }
 
-      // Simpan token di localStorage (opsional)
+      // Simpan token dan user
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setIsLoggedIn(true);
+      setUser(data.user);
+
       setMessage("Login berhasil!");
-      // Redirect, atau navigasi ke halaman lain bisa ditambahkan di sini
+      navigate("/");
 
     } catch (error) {
       setMessage(error.message);
     }
-    // Proses login, bisa menggunakan API atau simulasi login di sini
-    console.log("Login Submitted", email, password);
   };
 
   return (

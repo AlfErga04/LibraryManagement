@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import HashLoader from "react-spinners/HashLoader";
+
 import { Banner } from "@/components/item/banner";
 import { BookCollection } from "@/components/item/book-collection";
 import { ComingSoonBooks } from "@/components/item/coming-soon-books";
@@ -7,33 +10,45 @@ import { HighlightSection } from "@/components/item/highlight-section";
 import { SearchBar } from "@/components/item/search-bar";
 import { TrendingBooks } from "@/components/item/trending-books";
 
-import trendingBooks from "@/components/Booklist/trending";
-import comingSoonBooks from "@/components/Booklist/comingsoon";
-import books from "@/components/Book/books";
-
 const Home = () => {
-  const trendingBooksWithType = trendingBooks.map((book) => ({
-    ...book,
-    type: "trending",
-  }));
-  const comingSoonBooksWithType = comingSoonBooks.map((book) => ({
-    ...book,
-    type: "comingsoon",
-  }));
-  const booksWithType = books.map((book) => ({
-    ...book,
-    type: "book",
-  }));
+  const [allBooks, setAllBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [filteredBooksTrending, setFilteredBooksTrending] = useState([]);
+  const [filteredBooksComing, setFilteredBooksComing] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const allBooks = [
-    ...booksWithType,
-    ...trendingBooksWithType,
-    ...comingSoonBooksWithType,
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res1 = await axios.get("http://localhost:8000/api/book");
+        const books = res1.data.data;
 
-  const [filteredBooks, setFilteredBooks] = useState(booksWithType);
-  const [filteredBooksTrending, setFilteredBooksTrending] = useState(trendingBooksWithType);
-  const [filteredBooksComing, setFilteredBooksComing] = useState(comingSoonBooksWithType);
+        const comingSoonBooks = books.filter((b) => b.stok === 0);
+        const availableBooks = books.filter((b) => b.stok > 0);
+
+        setAllBooks(books);
+        setFilteredBooks(availableBooks);
+        setFilteredBooksComing(comingSoonBooks);
+
+        const res2 = await axios.get("http://localhost:8000/api/book/trending");
+        setFilteredBooksTrending(res2.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-stone-50">
+        <HashLoader color="#0854ff" />
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-stone-50 to-stone-100">

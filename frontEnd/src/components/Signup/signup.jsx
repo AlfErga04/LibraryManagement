@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Swal from 'sweetalert2'; 
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
   const [name, setName] = useState("");
@@ -7,13 +9,18 @@ function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
+
+   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setMessage("Password dan konfirmasi password tidak cocok.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Password dan konfirmasi password tidak cocok.',
+      });
       return;
     }
 
@@ -22,11 +29,13 @@ function SignUp() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify({
           name,
           email,
           password,
+          password_confirmation: confirmPassword,
           address,
           phone,
         }),
@@ -38,9 +47,21 @@ function SignUp() {
         throw new Error(data.message || "Registrasi gagal.");
       }
 
-      setMessage("Registrasi berhasil. Silakan cek email untuk aktivasi.");
+      Swal.fire({
+        icon: 'success',
+        title: 'Registrasi Berhasil',
+        text: 'Silakan cek email untuk aktivasi.',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        navigate("/login");
+      });;
+
     } catch (error) {
-      setMessage(error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Registrasi Gagal',
+        text: error.message,
+      });
     }
 
     console.log("Sign Up Submitted", name, email, password, address, phone);
@@ -121,8 +142,6 @@ function SignUp() {
             required
           />
         </div>
-
-        {message && <div className="alert alert-info mt-3">{message}</div>}
 
         <button type="submit" className="btn btn-primary">Sign Up</button>
       </form>
