@@ -1,0 +1,55 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Banner } from "@/components/item/banner";
+import { BookCollection } from "@/components/item/book-collection";
+import { ComingSoonBooks } from "@/components/item/coming-soon-books";
+import { HeroSection } from "@/components/item/hero-section";
+import { HighlightSection } from "@/components/item/highlight-section";
+import { SearchBar } from "@/components/item/search-bar";
+import { TrendingBooks } from "@/components/item/trending-books";
+
+const Home = () => {
+  const [books, setBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [filteredBooksTrending, setFilteredBooksTrending] = useState([]);
+  const [filteredBooksComing, setFilteredBooksComing] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/api/books") // ganti sesuai URL Laravel-mu
+      .then((response) => {
+        const all = response.data;
+
+        const withType = all.map((book) => ({
+          ...book,
+          type: book.type || "book", // default type kalau tidak ada
+        }));
+
+        setBooks(withType);
+        setFilteredBooks(withType.filter(b => b.type === "book"));
+        setFilteredBooksTrending(withType.filter(b => b.type === "trending"));
+        setFilteredBooksComing(withType.filter(b => b.type === "comingsoon"));
+      })
+      .catch((error) => {
+        console.error("Failed to fetch books:", error);
+      });
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-stone-50 to-stone-100">
+      <Banner />
+      <SearchBar
+        books={books}
+        setFilteredBooks={setFilteredBooks}
+        setFilteredBooksTrending={setFilteredBooksTrending}
+        setFilteredBooksComing={setFilteredBooksComing}
+      />
+      <HeroSection />
+      <HighlightSection booksCount={filteredBooks.length} />
+      <TrendingBooks books={filteredBooksTrending} />
+      <ComingSoonBooks books={filteredBooksComing} />
+      <BookCollection books={filteredBooks} />
+    </main>
+  );
+};
+
+export default Home;
