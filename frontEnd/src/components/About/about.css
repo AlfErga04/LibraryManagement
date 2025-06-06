@@ -1,0 +1,19 @@
+body {
+  background-color: #f9fafb;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+  background-color: #ffffff;
+}
+
+h2, h4 {
+  font-weight: 600;
+}
+
+.list-group-item {
+  background-color: transparent;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+}

@@ -10,7 +10,7 @@ export function BookModal({ book, isOpen, onClose }) {
     const [borrowStep, setBorrowStep] = useState(0)
     const [returnDate, setReturnDate] = useState("")
     const [agreedToTerms, setAgreedToTerms] = useState(false)
-    const [qrCodeData, setQrCodeData] = useState("")
+
 
     const today = new Date()
     const minDate = new Date(today)
@@ -38,7 +38,6 @@ export function BookModal({ book, isOpen, onClose }) {
             setBorrowStep(0)
             setReturnDate("")
             setAgreedToTerms(false)
-            setQrCodeData("")
         }
     }, [isOpen])
 
@@ -50,7 +49,7 @@ export function BookModal({ book, isOpen, onClose }) {
 
     const handleFinish = () => {
         if (returnDate && agreedToTerms) {
-            const qrData = JSON.stringify({
+            const Data = JSON.stringify({
                 bookId: book.id,
                 title: book.title,
                 borrower: "User123",
@@ -58,7 +57,6 @@ export function BookModal({ book, isOpen, onClose }) {
                 timestamp: new Date().toISOString(),
             })
 
-            setQrCodeData(qrData)
             setBorrowStep(2)
 
             setStock(stock - 1)
@@ -136,7 +134,7 @@ export function BookModal({ book, isOpen, onClose }) {
                 {borrowStep === 1 && (
                     <div className="p-4">
                         <div className="mb-4 text-center">
-                            <h2 className="font-serif text-xl font-medium text-slate-800 mb-1 mt-0">Borrow "{book.title}"</h2>
+                            <h2 className="font-serif text-xl font-medium text-slate-800 mb-1 mt-0">Reservasi "{book.title}"</h2>
                             <p className="text-sm text-slate-600">Select return date and agree to terms</p>
                         </div>
 
@@ -159,7 +157,7 @@ export function BookModal({ book, isOpen, onClose }) {
                                 <p className="mb-2">By borrowing this book, you agree to the following terms:</p>
                                 <ol className="list-decimal pl-5 space-y-1">
                                     <li>Return the book by the selected return date.</li>
-                                    <li>Late returns incur $0.50 per day.</li>
+                                    <li>Late returns incur Rp. 5000 per day.</li>
                                     <li>You’re responsible for damage to the book.</li>
                                     <li>Lost books incur replacement + fee.</li>
                                     <li>QR code valid 24h for pickup.</li>
@@ -197,17 +195,10 @@ export function BookModal({ book, isOpen, onClose }) {
                                 <Check className="h-5 w-5 text-green-600" />
                             </div>
                             <h2 className="font-serif text-xl font-medium text-slate-800 mb-1 mt-1">Book Reserved!</h2>
-                            <p className="text-sm text-slate-600">Show this QR code at the library</p>
                         </div>
 
                         <div className="flex flex-col items-center justify-center mb-3">
-                            <div className="bg-white p-2 rounded-lg shadow-md">
-                                <div className="relative w-40 h-40 bg-white flex items-center justify-center border border-slate-200 rounded-lg">
-                                    <QrCode className="w-32 h-32 text-slate-800" />
-                                    <div className="absolute inset-0 flex items-center justify-center opacity-0">{qrCodeData}</div>
-                                </div>
-                            </div>
-                            <p className="mt-1 text-xs text-slate-500 mb-0">Valid for 24 hours</p>
+                            <p className="mt-1 text-center text-xs text-slate-500 mb-0">Simpan bukti reservasi ini, dan tunjukan ke petugas perpustakaan</p>
                         </div>
 
                         <div className="bg-stone-50 p-2 rounded-lg text-sm space-y-1 mb-2">
