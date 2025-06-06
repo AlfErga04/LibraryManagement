@@ -1,8 +1,10 @@
 import React from "react";
 import { Offcanvas, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn }) {
+  const navigate = useNavigate();
+
   const userProfile = {
     name: "John Doe",
     userId: "12345",
@@ -22,13 +24,17 @@ function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn })
             <>
               <Nav.Link
                 onClick={() => {
+                  // Simulasi login dummy
+                  localStorage.setItem("token", "dummy-token");
                   setIsLoggedIn(true);
                   handleSidebarClose();
+                  navigate("/return-book/102"); // langsung ke halaman pengembalian buku dengan id 102
                 }}
                 className="text-primary fw-semibold"
               >
-                Login
+                Login (Dummy)
               </Nav.Link>
+
               <Nav.Link as={Link} to="/signup" onClick={handleSidebarClose} className="text-primary fw-semibold">
                 Sign Up
               </Nav.Link>
@@ -51,20 +57,28 @@ function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn })
               <Nav.Link as={Link} to="/profile" onClick={handleSidebarClose} className="text-primary fw-semibold">
                 👤 Profil
               </Nav.Link>
-              <Nav.Link as={Link} to="/history" onClick={handleSidebarClose} className="text-primary fw-semibold">
+              <Nav.Link as={Link} to="/borrow-history" onClick={handleSidebarClose} className="text-primary fw-semibold">
                 📚 Riwayat Peminjaman
               </Nav.Link>
-              <Nav.Link as={Link} to="/due-date" onClick={handleSidebarClose} className="text-primary fw-semibold">
-                ⏰ Jadwal Pengembalian
-              </Nav.Link>
+<Nav.Link
+  as={Link}
+  to="/return-book/102"
+  onClick={handleSidebarClose}
+  className="text-primary fw-semibold"
+>
+  ⏰ Jadwal Pengembalian
+</Nav.Link>
+
               <Nav.Link as={Link} to="/favorites" onClick={handleSidebarClose} className="text-primary fw-semibold">
                 ⭐ Favorit
               </Nav.Link>
 
               <Nav.Link
                 onClick={() => {
+                  localStorage.removeItem("token");
                   setIsLoggedIn(false);
                   handleSidebarClose();
+                  navigate("/"); // redirect ke homepage setelah logout
                 }}
                 className="text-danger fw-semibold"
               >

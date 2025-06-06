@@ -11,8 +11,12 @@ import Footer from "./components/Footer/footer";
 import SignUp from "./components/SignUp/SignUp";
 
 
-//book detail
-import BookDetail from "./components/Book/book-detail";
+//return-book
+import ReturnBook from "./components/Book/ReturnBook";
+import BorrowHistory from "./components/BorrowHistory/BorrowHistory";
+import About from "./components/About/about";
+import Favorites from "./components/Favorites/Favorites";
+import UserProfile from "./components/Profile/profile";
 // routes book detail <Route path="/book/:id" element={<BookDetail />} />
 
 function App() {
@@ -36,10 +40,21 @@ function App() {
 
           {/* Halaman Home Buku */}
           <Route path="/home" element={<Home />} />
-
-          {/* Halaman Book */}
+          {/* Halaman Navbar Book */}
           <Route path="/book" element={<Book />} />
+          {/* Halaman Navbar About Perpus */}
+          <Route path="/about" element={<About />} />
+          {/* Halaman Sidebar Profile */}
+          <Route path="/profile" element={<UserProfile />} />
+          {/* Halaman Sidebar Borrow-History */}
+          <Route path="/borrow-history" element={<BorrowHistory />} />
+          {/* Halaman Sidebar Return-Book */}
+          <Route path="/return-book/:id" element={<ReturnBook />} />
+          {/* Halaman Sidebar Favorites */}
+          <Route path="/favorites" element={<Favorites />} />
 
+
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
         <Footer />
       </div>

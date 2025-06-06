@@ -1,10 +1,12 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useState } from "react";
 import { BookModal } from "@/components/item/book-modal";
+import { Heart } from "lucide-react"; // atau gunakan ikon love sesuai library kamu
 
 export function BookCollection({ books }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const openModal = (book) => {
     setSelectedBook(book);
@@ -13,6 +15,12 @@ export function BookCollection({ books }) {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const toggleFavorite = (bookId) => {
+    setFavorites((prev) =>
+      prev.includes(bookId) ? prev.filter((id) => id !== bookId) : [...prev, bookId]
+    );
   };
 
   return (
@@ -26,7 +34,13 @@ export function BookCollection({ books }) {
         </div>
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {books.map((book) => (
-            <BookCard key={book.id} book={book} onClick={() => openModal(book)} />
+            <BookCard
+              key={book.id}
+              book={book}
+              onClick={() => openModal(book)}
+              onFavorite={() => toggleFavorite(book.id)}
+              isFavorite={favorites.includes(book.id)}
+            />
           ))}
         </div>
       </div>
@@ -35,13 +49,26 @@ export function BookCollection({ books }) {
   );
 }
 
-function BookCard({ book, onClick }) {
+function BookCard({ book, onClick, onFavorite, isFavorite }) {
   return (
     <Card
-      className="group overflow-hidden rounded-xl border-none transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shadow-lg h-full cursor-pointer"
-      onClick={onClick}
+      className="group overflow-hidden rounded-xl border-none transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shadow-lg h-full relative"
     >
-      <div className="relative h-56 overflow-hidden">
+      {/* LOVE ICON */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); // agar tidak membuka modal saat klik love
+          onFavorite();
+        }}
+        className="absolute top-3 right-3 z-10 rounded-full bg-white/80 p-1 hover:bg-white"
+        title="Tambah ke Favorit"
+      >
+        <Heart
+          className={`w-5 h-5 ${isFavorite ? "fill-red-500 stroke-red-500" : "stroke-slate-400"}`}
+        />
+      </button>
+
+      <div className="relative h-56 overflow-hidden cursor-pointer" onClick={onClick}>
         <img
           src={book.image || "/placeholder.svg"}
           alt={book.title}
