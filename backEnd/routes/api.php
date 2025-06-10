@@ -27,6 +27,12 @@ Route::post('/lupa-password', [LupaPasswordController::class, 'sendResetLink']);
 Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
+        // Tambahkan ini di bagian bawah group ini:
+    Route::get('/user', function (Request $request) {
+        return response()->json([
+            'user' => $request->user()
+        ]);
+    });
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::post('/pinjam', [PeminjamanController::class, 'store']);
     Route::post('/pengembalian/{peminjaman_id}', [PengembalianController::class, 'store'])->middleware([Pengembalian::class]);
