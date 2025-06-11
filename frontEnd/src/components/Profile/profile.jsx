@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
+import HashLoader from "react-spinners/HashLoader";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -37,7 +38,13 @@ const UserProfile = () => {
       });
   }, []);
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-stone-50">
+        <HashLoader color="#0854ff" />
+      </div>
+    );
+  }
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
   if (!user) return null;
 
