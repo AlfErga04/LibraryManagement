@@ -20,7 +20,8 @@ class TrendingResource extends JsonResource
             'penulis' => $this->penulis,
             'image' => $this->image,
             'jumlah_peminjaman' => $this->peminjaman_count,
-            'category' => $this->category->name
+            'category' => $this->category->name,
+            'description' => $this->description
         ];
     }
 }

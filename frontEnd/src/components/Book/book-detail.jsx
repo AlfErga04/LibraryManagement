@@ -9,7 +9,7 @@ const BookDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/book/${id}`)
+    axios.get(`http://localhost:8000/api/book/`)
       .then(response => {
         setBook(response.data.data);
       })

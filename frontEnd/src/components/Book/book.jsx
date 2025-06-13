@@ -1,19 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { BookModal } from "@/components/item/book-modal";
-import initialBooks from "./books";
+import HashLoader from "react-spinners/HashLoader";
 
 export default function Book() {
-  const [books] = useState(initialBooks);
+  const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBook, setSelectedBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/book");
+      const data = response.data.data;
+      setBooks(data);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+    (book.judul || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleResetSearch = () => {
     setSearchTerm("");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-stone-50">
+        <HashLoader color="#0854ff" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto mt-12 px-4">
@@ -49,16 +75,16 @@ export default function Book() {
               onClick={() => setSelectedBook(book)}
             >
               <img
-                src={book.image}
-                alt={book.title}
+                src={book.image ? `http://localhost:8000/storage/${book.image}` : "/placeholder.svg"}
+                alt={book.judul}
                 className="h-64 w-full object-cover"
               />
               <div className="p-4">
-                <h5 className="text-xl font-semibold mb-2">{book.title}</h5>
+                <h5 className="text-xl font-semibold mb-2">{book.judul}</h5>
                 <p className="text-sm text-gray-600 line-clamp-3">{book.description}</p>
               </div>
               <div className="bg-gray-100 text-gray-500 text-sm px-4 py-2">
-                {book.author} - {book.year}
+                {book.penulis} - {new Date(book.tahun_terbit).getFullYear()}
               </div>
             </div>
           ))

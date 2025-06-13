@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Book;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
@@ -14,7 +15,6 @@ class PeminjamanController extends Controller
     {
         $validate = $request->validate([
             'book_id' => 'required|exists:books,id',
-            'tanggal_pinjam' => 'required|date',
             'tenggat' => 'required|date|after_or_equal:tanggal_pinjam',
         ]);
 
@@ -28,7 +28,7 @@ class PeminjamanController extends Controller
         $peminjaman = Peminjaman::create([
             'user_id' => $user->id,
             'book_id' => $book->id,
-            'tanggal_pinjam' => $request->tanggal_pinjam,
+            'tanggal_pinjam' => Carbon::now(),
             'tenggat' => $request->tenggat,
             'status' => 'dipinjam',
         ]);

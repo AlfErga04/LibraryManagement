@@ -46,32 +46,32 @@ export function BookModal({ book, isOpen, onClose }) {
         }
     }
 
-const handleFinish = async () => {
-    if (returnDate && agreedToTerms) {
-        const userId = localStorage.getItem("userId") || "Unknown"
+    const handleFinish = async () => {
+        if (returnDate && agreedToTerms) {
+            const userId = localStorage.getItem("userId") || "Unknown"
 
-        const borrowData = {
-            bookId: book.id,
-            title: book.title,
-            borrower: userId,
-            returnDate: returnDate,
-            timestamp: new Date().toISOString(),
-        }
-
-        try {
-            await axios.post("http://localhost:8000/api/pinjam", borrowData)
-
-            setBorrowStep(2)
-            setStock(stock - 1)
-            if (stock === 1) {
-                setStatus("Out of Stock")
+            const borrowData = {
+                bookId: book.id,
+                title: book.title,
+                borrower: userId,
+                returnDate: returnDate,
+                timestamp: new Date().toISOString(),
             }
-        } catch (error) {
-            console.error("Error while sending data to backend:", error)
-            alert("Gagal mengirim data ke server. Silakan coba lagi.")
+
+            try {
+                await axios.post("http://localhost:8000/api/pinjam", borrowData)
+
+                setBorrowStep(2)
+                setStock(stock - 1)
+                if (stock === 1) {
+                    setStatus("Out of Stock")
+                }
+            } catch (error) {
+                console.error("Error while sending data to backend:", error)
+                alert("Gagal mengirim data ke server. Silakan coba lagi.")
+            }
         }
     }
-}
 
 
     const handleCloseModal = () => {
@@ -86,9 +86,9 @@ const handleFinish = async () => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div
-    className="relative bg-white rounded-xl shadow-2xl w-full mt-20 max-h-[80vh] overflow-auto transition-all duration-300"
-    style={{ maxWidth: isOpen ? "24rem" : "16rem" }} // 24rem = 384px (50% lebih besar dari 16rem = 256px)
-    onClick={(e) => e.stopPropagation()}
+                className="relative bg-white rounded-xl shadow-2xl w-full mt-20 max-h-[80vh] overflow-auto transition-all duration-300"
+                style={{ maxWidth: isOpen ? "24rem" : "16rem" }} // 24rem = 384px (50% lebih besar dari 16rem = 256px)
+                onClick={(e) => e.stopPropagation()}
             >
                 <button
                     onClick={handleCloseModal}
@@ -100,14 +100,14 @@ const handleFinish = async () => {
                 {borrowStep === 0 && (
                     <>
                         <div className="relative h-36 w-full overflow-hidden">
-                            <img src={book.image || "/placeholder.svg"} alt={book.title} className="w-full h-full object-cover" />
+                            <img src={book.image ? `http://localhost:8000/storage/${book.image}` : "/placeholder.svg"} />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         </div>
 
                         <div className="p-4">
-                            <h2 className="font-serif text-xl font-medium text-slate-800 mb-2 mt-0">{book.title}</h2>
+                            <h2 className="font-serif text-xl font-medium text-slate-800 mb-2 mt-0">{book.judul}</h2>
                             <p className="text-sm text-amber-600 mb-2">
-                                By {book.author} • {book.year}
+                                By {book.penulis} • {book.tahun_terbit}
                             </p>
 
                             <div className="mb-4">
