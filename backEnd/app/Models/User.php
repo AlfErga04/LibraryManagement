@@ -69,4 +69,10 @@ class User extends Authenticatable
     {
         $this->notify(new ResetPassword($token));
     }
+
+    public function favoriteBooks()
+    {
+    return $this->belongsToMany(Book::class, 'favorites')->withTimestamps();
+    }
+
 }

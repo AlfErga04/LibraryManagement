@@ -6,10 +6,33 @@ function Favorites() {
   const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    setFavoriteBooks(favorites);
+    const fetchFavorites = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch("http://localhost:8000/api/favorites", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data favorit");
+        }
+
+        const data = await response.json();
+        setFavoriteBooks(data);
+      } catch (error) {
+        console.error("Error:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
   }, []);
 
   const openModal = (book) => {

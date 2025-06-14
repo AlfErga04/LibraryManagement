@@ -32,4 +32,9 @@ class Book extends Model
     {
         return $this->hasMany(Peminjaman::class);
     }
+    public function favorit()
+    {
+    return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
+
 }
