@@ -33,8 +33,17 @@ function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn, u
               </div>
 
               <Nav.Link as={Link} to="/profile" onClick={handleSidebarClose}>👤 Profil</Nav.Link>
-              <Nav.Link as={Link} to="/history" onClick={handleSidebarClose}>📚 Riwayat Peminjaman</Nav.Link>
-              <Nav.Link as={Link} to="/due-date" onClick={handleSidebarClose}>⏰ Jadwal Pengembalian</Nav.Link>
+              <Nav.Link as={Link} to="/borrow-history" onClick={handleSidebarClose} className="text-primary fw-semibold">
+                📚 Riwayat Peminjaman
+              </Nav.Link>
+  <Nav.Link
+  as={Link}
+  to="/return-book/102"
+  onClick={handleSidebarClose}
+  className="text-primary fw-semibold"
+>
+  ⏰ Jadwal Pengembalian
+</Nav.Link>
               <Nav.Link as={Link} to="/favorites" onClick={handleSidebarClose}>⭐ Favorit</Nav.Link>
 
               <Nav.Link

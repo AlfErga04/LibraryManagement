@@ -10,6 +10,11 @@ import Login from "./components/Login/login";
 import Footer from "./components/Footer/footer";
 import SignUp from "./components/SignUp/SignUp";
 import BookDetail from "./components/Book/book-detail";
+import UserProfile from "./components/Profile/profile";
+import ReturnBook from "./components/Book/ReturnBook";
+import BorrowHistory from "./components/BorrowHistory/BorrowHistory";
+import Favorites from "./components/Favorites/Favorites";
+import About from "./components/About/about";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +47,16 @@ function App() {
             element={<Login setIsLoggedIn={setIsLoggedIn} setUser={setUser} />}
           />
           <Route path="/register" element={<SignUp />} />
+          {/* Halaman Navbar About Perpus */}
+          <Route path="/about" element={<About />} />
+          {/* Halaman Sidebar Profile */}
+          <Route path="/profile" element={<UserProfile />} />
+          {/* Halaman Sidebar Return-Book */}
+          <Route path="/return-book/:id" element={<ReturnBook />} />
+          {/* Halaman Sidebar Borrow-History */}
+          <Route path="/borrow-history" element={<BorrowHistory />} />
+          {/* Halaman Sidebar Favorites */}
+          <Route path="/favorites" element={<Favorites />} />
         </Routes>
 
         {/* Footer */}

@@ -40,7 +40,7 @@ function BookCard({ book, onClick }) {
     <Card className="group overflow-hidden rounded-xl border-none transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shadow-lg h-full" onClick={onClick}>
       <div className="relative h-56 overflow-hidden">
         <img
-          src={`http://localhost:8000/storage/${book.image}` || "/placeholder.svg"}
+          src={book.image ? `http://localhost:8000/storage/${book.image}` : "/placeholder.svg"}
           alt={book.judul}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
