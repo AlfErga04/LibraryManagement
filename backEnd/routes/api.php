@@ -33,6 +33,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
             'user' => $request->user()
         ]);
     });
+    Route::post('/books/{book}/favorite', [BookController::class, 'toggleFavorite']);
+    Route::get('/favorites', [BookController::class, 'getFavorites']);
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::post('/pinjam', [PeminjamanController::class, 'store']);
     Route::post('/pengembalian/{peminjaman_id}', [PengembalianController::class, 'store'])->middleware([Pengembalian::class]);
