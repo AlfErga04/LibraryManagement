@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Pengembalian;
+use App\Observers\PengembalianObserver;
 use Illuminate\Support\ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -25,6 +27,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+         Pengembalian::observe(PengembalianObserver::class);
     }
 }

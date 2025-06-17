@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Pembayaran;
 use App\Models\Peminjaman;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,4 +19,9 @@ class Pengembalian extends Model
     {
         return $this->belongsTo(Peminjaman::class);
     }
+    
+public function pembayaran()
+{
+    return $this->hasOne(Pembayaran::class);
+}
 }

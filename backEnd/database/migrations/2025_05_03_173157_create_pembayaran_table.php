@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['pending', 'success', 'failed'])->default('pending')->nullable();
-            $table->string('snap_token', 255)->nullable();
             $table->decimal('jumlah_denda', 10, 2)->nullable();
             $table->dateTime('waktu_bayar')->nullable();
             $table->foreignId('pengembalian_id')->nullable()->constrained('pengembalian')->onDelete('cascade');

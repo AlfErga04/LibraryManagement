@@ -15,6 +15,7 @@ import ReturnBook from "./components/Book/ReturnBook";
 import BorrowHistory from "./components/BorrowHistory/BorrowHistory";
 import Favorites from "./components/Favorites/Favorites";
 import About from "./components/About/about";
+import PaymentCallback from "./components/BorrowHistory/PaymentCallback";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,6 +58,8 @@ function App() {
           <Route path="/borrow-history" element={<BorrowHistory />} />
           {/* Halaman Sidebar Favorites */}
           <Route path="/favorites" element={<Favorites />} />
+
+            <Route path="/payment-callback" element={<PaymentCallback />} />
         </Routes>
 
         {/* Footer */}
