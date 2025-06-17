@@ -1,48 +1,114 @@
-import React from "react";
-import { Table, Card } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Table, Card, Alert, Badge } from "react-bootstrap";
+import axios from "axios";
+import HashLoader from "react-spinners/HashLoader";
+import { BsCheckCircleFill } from "react-icons/bs";
 
 function BorrowHistory() {
-  // Contoh data riwayat peminjaman buku
-  const borrowHistory = [
-    { id: 1, bookTitle: "The Great Gatsby", borrowDate: "2025-04-01", returnDate: "2025-04-15", status: "Returned" },
-    { id: 2, bookTitle: "1984", borrowDate: "2025-04-10", returnDate: "2025-04-24", status: "Pending" },
-    { id: 3, bookTitle: "To Kill a Mockingbird", borrowDate: "2025-03-20", returnDate: "2025-04-03", status: "Returned" },
-    { id: 4, bookTitle: "Moby Dick", borrowDate: "2025-04-05", returnDate: "2025-04-19", status: "Pending" }
-  ];
+  const [borrowHistory, setBorrowHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchBorrowHistory = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:8000/api/peminjaman/riwayat', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      const data = Array.isArray(response.data?.data)
+        ? response.data.data.filter(item =>
+          item.status === "dikembalikan" || item.status === "telat"
+        )
+        : [];
+
+      setBorrowHistory(data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch borrow history");
+      console.error("Error fetching borrow history:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBorrowHistory();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-stone-50">
+        <HashLoader color="#0854ff" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mt-5">
+        <Alert variant="danger">{error}</Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">
-      <h3 className="mb-4">Borrow History</h3>
-      
-      {/* Card container for Borrow History */}
+      <h3 className="mb-4">Riwayat Peminjaman</h3>
+
       <Card>
         <Card.Body>
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Book Title</th>
-                <th>Borrow Date</th>
-                <th>Return Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {borrowHistory.map((borrow, index) => (
-                <tr key={borrow.id}>
-                  <td>{index + 1}</td>
-                  <td>{borrow.bookTitle}</td>
-                  <td>{borrow.borrowDate}</td>
-                  <td>{borrow.returnDate}</td>
-                  <td>
-                    <span className={`badge ${borrow.status === "Returned" ? "bg-success" : "bg-warning"}`}>
-                      {borrow.status}
-                    </span>
-                  </td>
+          {!borrowHistory || borrowHistory.length === 0 ? (
+            <div className="text-center py-4">
+              <p>Tidak ada riwayat peminjaman</p>
+            </div>
+          ) : (
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Judul Buku</th>
+                  <th>Tanggal Pinjam</th>
+                  <th>Tenggat</th>
+                  <th>Status</th>
+                  <th>Denda</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {borrowHistory.map((borrow, index) => (
+                  <tr key={borrow.id || index}>
+                    <td>{index + 1}</td>
+                    <td>{borrow.book || 'N/A'}</td>
+                    <td>{borrow.tanggal_pinjam ? new Date(borrow.tanggal_pinjam).toLocaleDateString() : 'N/A'}</td>
+                    <td>{borrow.tenggat ? new Date(borrow.tenggat).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                      <Badge
+                        bg={
+                          borrow.status === "dikembalikan" ? "success" :
+                            borrow.status === "telat" ? "danger" : "warning"
+                        }
+                      >
+                        {borrow.status || 'unknown'}
+                      </Badge>
+                    </td>
+                    <td>
+                      {borrow.pengembalian?.pembayaran ? (
+                        <span className="badge text-success  d-flex align-items-center gap-1">
+                          <BsCheckCircleFill color="green" size={16} />
+                          Dibayar
+                        </span>
+                      ) : borrow.denda > 0 ? (
+                        `Rp ${borrow.denda.toLocaleString('id-ID')}`
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
         </Card.Body>
       </Card>
     </div>

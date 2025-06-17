@@ -20,7 +20,10 @@ class RiwayatResource extends JsonResource
             'tanggal_pinjam' => $this->tanggal_pinjam,
             'tenggat' => $this->tenggat,
             'status' => $this->status,
-            'denda' => $this->pengembalian->denda ?? 0
+            'denda' => optional($this->pengembalian)->denda ?? 0,
+            'pengembalian' => $this->pengembalian ? [
+                'pembayaran' => $this->pengembalian->pembayaran,
+            ] : null
         ];
     }
 }

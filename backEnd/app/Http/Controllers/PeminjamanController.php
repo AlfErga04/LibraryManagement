@@ -15,7 +15,7 @@ class PeminjamanController extends Controller
     {
         $validate = $request->validate([
             'book_id' => 'required|exists:books,id',
-            'tenggat' => 'required|date|after_or_equal:tanggal_pinjam',
+            'tenggat' => 'required|date|after_or_equal:today',
         ]);
 
         $user = Auth::user();
@@ -35,14 +35,54 @@ class PeminjamanController extends Controller
 
         $book->decrement('stok');
 
-        return response()->json(['status' => 'success','message' => 'Berhasil meminjam buku'], 201);
+        return response()->json(['status' => 'success', 'message' => 'Berhasil meminjam buku'], 201);
     }
 
-    public function riwayatUser() {
+    public function riwayatUser()
+    {
         $user = auth()->user();
-        $peminjaman = Peminjaman::with(['book', 'pengembalian'])->where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+
+        $peminjaman = Peminjaman::with([
+            'book:id,judul',
+            'pengembalian:id,peminjaman_id,denda',
+            'pengembalian.pembayaran:id,pengembalian_id,jumlah_denda,waktu_bayar' // Pastikan ini sesuai
+        ])
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['dikembalikan', 'telat']) // Filter status
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return RiwayatResource::collection($peminjaman);
     }
 
+    public function jadwalPengembalian()
+    {
+        $user = auth()->user();
+        $peminjaman = Peminjaman::with([
+            'book:id,judul',
+            'pengembalian:id,peminjaman_id,denda',
+            'pengembalian.pembayaran:id,pengembalian_id,status,order_id,waktu_bayar'
+        ])
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['dipinjam'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'data' => $peminjaman->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'book' => $item->book->judul,
+                    'tanggal_pinjam' => $item->tanggal_pinjam,
+                    'tenggat' => $item->tenggat,
+                    'status' => $item->status,
+                    'denda' => $item->pengembalian->denda ?? 0,
+                    'pengembalian' => $item->pengembalian ? [
+                        'id' => $item->pengembalian->id,
+                        'pembayaran' => $item->pengembalian->pembayaran
+                    ] : null
+                ];
+            })
+        ]);
+    }
 }

@@ -11,12 +11,20 @@ export function BookModal({ book, isOpen, onClose }) {
     const [borrowStep, setBorrowStep] = useState(0)
     const [returnDate, setReturnDate] = useState("")
     const [agreedToTerms, setAgreedToTerms] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
 
     const today = new Date()
     const minDate = new Date(today)
     const maxDate = new Date(today)
     maxDate.setDate(today.getDate() + 30)
 
+    axios.interceptors.request.use(config => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    });
     const formatDate = (date) => {
         return date.toISOString().split("T")[0]
     }
@@ -48,29 +56,41 @@ export function BookModal({ book, isOpen, onClose }) {
 
     const handleFinish = async () => {
         if (returnDate && agreedToTerms) {
-            const userId = localStorage.getItem("userId") || "Unknown"
-
-            const borrowData = {
-                bookId: book.id,
-                title: book.title,
-                borrower: userId,
-                returnDate: returnDate,
-                timestamp: new Date().toISOString(),
-            }
-
             try {
-                await axios.post("http://localhost:8000/api/pinjam", borrowData)
+                const response = await axios.post("http://localhost:8000/api/pinjam",
+                    {
+                        book_id: book.id,
+                        tenggat: returnDate
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
 
-                setBorrowStep(2)
-                setStock(stock - 1)
+                setBorrowStep(2);
+                setStock(stock - 1);
                 if (stock === 1) {
-                    setStatus("Out of Stock")
+                    setStatus("Out of Stock");
                 }
             } catch (error) {
-                console.error("Error while sending data to backend:", error)
-                alert("Gagal mengirim data ke server. Silakan coba lagi.")
+                console.error("Error while sending data to backend:", error);
+                alert(error.response?.data?.message || "Gagal meminjam buku. Silakan coba lagi.");
             }
         }
+
+         if (returnDate && agreedToTerms) {
+        setIsLoading(true);
+        try {
+            // ... kode peminjaman
+        } catch (error) {
+            // ... handle error
+        } finally {
+            setIsLoading(false);
+        }
+    }
     }
 
 
@@ -80,6 +100,7 @@ export function BookModal({ book, isOpen, onClose }) {
             setBorrowStep(0)
         }, 300)
     }
+    
 
     if (!isOpen || !book) return null
 

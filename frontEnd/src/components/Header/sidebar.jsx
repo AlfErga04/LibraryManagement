@@ -3,6 +3,15 @@ import { Offcanvas, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn, user }) {
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    handleSidebarClose();
+    window.location.pathname = '/';
+  };
+
   return (
     <Offcanvas show={showSidebar} onHide={handleSidebarClose} placement="end" className="bg-light">
       <Offcanvas.Header closeButton>
@@ -36,22 +45,19 @@ function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn, u
               <Nav.Link as={Link} to="/borrow-history" onClick={handleSidebarClose} className="text-primary fw-semibold">
                 📚 Riwayat Peminjaman
               </Nav.Link>
-  <Nav.Link
-  as={Link}
-  to="/return-book/102"
-  onClick={handleSidebarClose}
-  className="text-primary fw-semibold"
->
-  ⏰ Jadwal Pengembalian
-</Nav.Link>
+              <Nav.Link
+                as={Link}
+                to="/return-book/102"
+                onClick={handleSidebarClose}
+                className="text-primary fw-semibold"
+              >
+                ⏰ Jadwal Pengembalian
+              </Nav.Link>
               <Nav.Link as={Link} to="/favorites" onClick={handleSidebarClose}>⭐ Favorit</Nav.Link>
 
               <Nav.Link
                 onClick={() => {
-                  setIsLoggedIn(false);
-                  localStorage.removeItem("token");
-                  localStorage.removeItem("user");
-                  handleSidebarClose();
+                  handleLogout();
                 }}
                 className="text-danger fw-semibold"
               >
