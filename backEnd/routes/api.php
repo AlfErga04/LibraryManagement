@@ -6,6 +6,7 @@ use App\Http\Middleware\Pengembalian;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\EditProfile;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\LupaPasswordController;
@@ -50,4 +51,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ❤️ FAVORIT BUKU
     Route::post('/favorites/toggle/{book}', [FavoritesController::class, 'toggle']);
     Route::get('/favorites', [FavoritesController::class, 'list']);
+    Route::put('/edit', [EditProfile::class, 'edit']);
+
 });

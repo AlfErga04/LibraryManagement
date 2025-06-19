@@ -21,7 +21,8 @@ class TrendingResource extends JsonResource
             'image' => $this->image,
             'jumlah_peminjaman' => $this->peminjaman_count,
             'category' => $this->category->name,
-            'description' => $this->description
+            'description' => $this->description,
+            'stok' => $this->stok,
         ];
     }
 }
