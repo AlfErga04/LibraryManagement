@@ -1,95 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Card, Button, Form } from 'react-bootstrap';
-
-// Dummy data peminjaman berdasarkan ID
-const dummyData = {
-  101: {
-    title: 'React untuk Pemula',
-    borrower: 'Alice',
-    due_date: '2024-07-20',
-  },
-  102: {
-    title: 'Node.js Lanjutan',
-    borrower: 'Bob',
-    due_date: '2025-07-10',
-  },
-  103: {
-    title: 'Laravel Mastery',
-    borrower: 'Charlie',
-    due_date: '2024-07-25',
-  },
-};
+import { Card, Table } from 'react-bootstrap';
+import axios from 'axios';
 
 const ReturnBook = () => {
-  const { id } = useParams(); // Simulasi ID dinamis dari URL
-  const [borrowedBook, setBorrowedBook] = useState(null);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulasi ambil data dari backend (dummy)
-    const data = dummyData[id];
-    if (data) {
-      setBorrowedBook(data);
-    } else {
-      console.error('Data tidak ditemukan untuk ID:', id);
-    }
-  }, [id]);
+    const token = localStorage.getItem('token');
 
-  if (!borrowedBook) {
-    return <div className="container mt-5">📦 Data peminjaman tidak ditemukan untuk ID: {id}</div>;
-  }
+    axios
+      .get('http://localhost:8000/api/peminjaman/jadwal-pengembalian', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setData(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setError('Gagal mengambil data pengembalian.');
+        setLoading(false);
+      });
+  }, []);
 
-  const today = new Date();
-  const dueDate = new Date(borrowedBook.due_date);
-  const lateDays = Math.max(0, Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24)));
-  const finePerDay = 10000;
-  const totalFine = lateDays * finePerDay;
-
-  const handlePayment = () => {
-    alert('Simulasi pembayaran dummy!');
-    console.log('Pembayaran berhasil (dummy)');
-  };
+  if (loading) return <div className="container mt-5">🔄 Memuat data jadwal pengembalian...</div>;
+  if (error) return <div className="container mt-5">❌ {error}</div>;
 
   return (
     <div className="container mt-5">
       <Card className="shadow p-4">
-        <h3 className="mb-3">📚 Pengembalian Buku (ID: {id})</h3>
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Nama Peminjam</Form.Label>
-            <Form.Control type="text" readOnly value={borrowedBook.borrower} />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Judul Buku</Form.Label>
-            <Form.Control type="text" readOnly value={borrowedBook.title} />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Tanggal Jatuh Tempo</Form.Label>
-            <Form.Control type="text" readOnly value={borrowedBook.due_date} />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Terlambat</Form.Label>
-            <Form.Control type="text" readOnly value={`${lateDays} hari`} />
-          </Form.Group>
-
-          <Form.Group className="mb-4">
-            <Form.Label>Total Denda</Form.Label>
-            <Form.Control type="text" readOnly value={`Rp ${totalFine.toLocaleString()}`} />
-          </Form.Group>
-
-          {totalFine > 0 ? (
-            <Button variant="success" onClick={handlePayment}>
-              💳 Bayar Sekarang
-            </Button>
-          ) : (
-            <Button variant="secondary" disabled>
-              Tidak Ada Denda
-            </Button>
-          )}
-        </Form>
+        <h3 className="mb-4">📚 Jadwal Pengembalian Buku</h3>
+        {data.length === 0 ? (
+          <p>Tidak ada buku yang sedang dipinjam.</p>
+        ) : (
+          <Table striped bordered hover responsive>
+            <thead className="table-light">
+              <tr>
+                <th>#</th>
+                <th>Judul Buku</th>
+                <th>Tanggal Pinjam</th>
+                <th>Tenggat</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item, idx) => (
+                <tr key={item.id}>
+                  <td>{idx + 1}</td>
+                  <td>{item.book}</td>
+                  <td>{item.tanggal_pinjam}</td>
+                  <td>{item.tenggat}</td>
+                  <td><span className="badge bg-warning text-dark">{item.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Card>
     </div>
   );

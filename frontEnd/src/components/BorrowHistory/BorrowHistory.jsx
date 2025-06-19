@@ -67,7 +67,7 @@ function BorrowHistory() {
             <Table striped bordered hover responsive>
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th>No</th>
                   <th>Judul Buku</th>
                   <th>Tanggal Pinjam</th>
                   <th>Tenggat</th>

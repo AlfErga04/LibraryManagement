@@ -11,7 +11,8 @@ function Favorites() {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("token");
+
         const response = await fetch("http://localhost:8000/api/favorites", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -24,7 +25,16 @@ function Favorites() {
         }
 
         const data = await response.json();
-        setFavoriteBooks(data);
+        const mapped = data.map((item) => ({
+          id: item.id,
+          judul: item.title,
+          penulis: item.author,
+          tahun_terbit: item.year,
+          image: item.image,
+          description: item.description,
+        }));
+
+        setFavoriteBooks(mapped);
       } catch (error) {
         console.error("Error:", error.message);
       } finally {
@@ -54,6 +64,10 @@ function Favorites() {
           <div className="mx-auto h-[1px] w-24 bg-amber-300"></div>
         </div>
 
+        {loading && (
+          <p className="text-center text-gray-500">Memuat data buku favorit...</p>
+        )}
+
         {favoriteBooks.length === 0 ? (
           <p className="text-center text-slate-500">Belum ada buku favorit.</p>
         ) : (
@@ -79,23 +93,25 @@ function BookCard({ book, onClick }) {
       <div className="relative h-56 overflow-hidden">
         <img
           src={book.image || "/placeholder.svg"}
-          alt={book.title}
+          alt={book.judul}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
       </div>
+
       <CardContent className="p-6 bg-white">
         <h3 className="font-serif mb-2 text-xl font-medium text-slate-800 line-clamp-1">
-          {book.title}
+          {book.judul}
         </h3>
-        <p className="text-amber-600 text-sm">By {book.author}</p>
+        <p className="text-amber-600 text-sm">By {book.penulis}</p>
       </CardContent>
+
       <CardFooter className="flex justify-between border-t border-stone-100 bg-stone-50 px-6 py-3 text-sm text-slate-500 mt-auto">
         <span className="flex items-center">
-          <span className="mr-1 text-amber-400">✍️</span> Penulis
+          <span className="mr-1 text-amber-400">✍️</span> {book.penulis}
         </span>
         <span className="flex items-center">
-          <span className="mr-1 text-amber-400">📅</span> {book.year}
+          <span className="mr-1 text-amber-400">📅</span> {book.tahun_terbit}
         </span>
       </CardFooter>
     </Card>

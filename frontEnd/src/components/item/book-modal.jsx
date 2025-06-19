@@ -3,7 +3,7 @@
 import { X, Calendar, Check, QrCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
-import axios from "axios" // <-- Import axios
+import axios from "axios"
 
 export function BookModal({ book, isOpen, onClose }) {
     const [stock, setStock] = useState(Math.floor(Math.random() * 10) + 1)
@@ -11,7 +11,7 @@ export function BookModal({ book, isOpen, onClose }) {
     const [borrowStep, setBorrowStep] = useState(0)
     const [returnDate, setReturnDate] = useState("")
     const [agreedToTerms, setAgreedToTerms] = useState(false)
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
 
     const today = new Date()
     const minDate = new Date(today)
@@ -19,12 +19,13 @@ export function BookModal({ book, isOpen, onClose }) {
     maxDate.setDate(today.getDate() + 30)
 
     axios.interceptors.request.use(config => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token')
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`
         }
-        return config;
-    });
+        return config
+    })
+
     const formatDate = (date) => {
         return date.toISOString().split("T")[0]
     }
@@ -56,8 +57,9 @@ export function BookModal({ book, isOpen, onClose }) {
 
     const handleFinish = async () => {
         if (returnDate && agreedToTerms) {
+            setIsLoading(true)
             try {
-                const response = await axios.post("http://localhost:8000/api/pinjam",
+                await axios.post("http://localhost:8000/api/pinjam",
                     {
                         book_id: book.id,
                         tenggat: returnDate
@@ -68,31 +70,21 @@ export function BookModal({ book, isOpen, onClose }) {
                             'Content-Type': 'application/json'
                         }
                     }
-                );
+                )
 
-                setBorrowStep(2);
-                setStock(stock - 1);
+                setBorrowStep(2)
+                setStock(prev => prev - 1)
                 if (stock === 1) {
-                    setStatus("Out of Stock");
+                    setStatus("Out of Stock")
                 }
             } catch (error) {
-                console.error("Error while sending data to backend:", error);
-                alert(error.response?.data?.message || "Gagal meminjam buku. Silakan coba lagi.");
+                console.error("Error while sending data to backend:", error)
+                alert(error?.response?.data?.message || "Gagal meminjam buku. Silakan coba lagi.")
+            } finally {
+                setIsLoading(false)
             }
         }
-
-         if (returnDate && agreedToTerms) {
-        setIsLoading(true);
-        try {
-            // ... kode peminjaman
-        } catch (error) {
-            // ... handle error
-        } finally {
-            setIsLoading(false);
-        }
     }
-    }
-
 
     const handleCloseModal = () => {
         onClose()
@@ -100,7 +92,6 @@ export function BookModal({ book, isOpen, onClose }) {
             setBorrowStep(0)
         }, 300)
     }
-    
 
     if (!isOpen || !book) return null
 
@@ -108,7 +99,7 @@ export function BookModal({ book, isOpen, onClose }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div
                 className="relative bg-white rounded-xl shadow-2xl w-full mt-20 max-h-[80vh] overflow-auto transition-all duration-300"
-                style={{ maxWidth: isOpen ? "24rem" : "16rem" }} // 24rem = 384px (50% lebih besar dari 16rem = 256px)
+                style={{ maxWidth: isOpen ? "24rem" : "16rem" }}
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
@@ -163,7 +154,7 @@ export function BookModal({ book, isOpen, onClose }) {
                 {borrowStep === 1 && (
                     <div className="p-4">
                         <div className="mb-4 text-center">
-                            <h2 className="font-serif text-xl font-medium text-slate-800 mb-1 mt-0">Reservasi "{book.title}"</h2>
+                            <h2 className="font-serif text-xl font-medium text-slate-800 mb-1 mt-0">Reservasi "{book.judul}"</h2>
                             <p className="text-sm text-slate-600">Select return date and agree to terms</p>
                         </div>
 
@@ -210,10 +201,14 @@ export function BookModal({ book, isOpen, onClose }) {
                         <Button
                             className="w-full bg-amber-300 hover:bg-amber-400 text-slate-900 font-medium py-3 text-sm"
                             onClick={handleFinish}
-                            disabled={!returnDate || !agreedToTerms}
+                            disabled={!returnDate || !agreedToTerms || isLoading}
                         >
-                            Finish
+                            {isLoading ? "Processing..." : "Finish"}
                         </Button>
+
+                        {isLoading && (
+                            <p className="text-sm text-blue-600 text-center mt-2">Memproses peminjaman...</p>
+                        )}
                     </div>
                 )}
 
@@ -233,7 +228,7 @@ export function BookModal({ book, isOpen, onClose }) {
                         <div className="bg-stone-50 p-2 rounded-lg text-sm space-y-1 mb-2">
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Book:</span>
-                                <span className="font-medium text-slate-800">{book.title}</span>
+                                <span className="font-medium text-slate-800">{book.judul}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Return by:</span>
@@ -242,10 +237,7 @@ export function BookModal({ book, isOpen, onClose }) {
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Reservation ID:</span>
                                 <span className="font-medium text-slate-800">
-                                    #
-                                    {Math.floor(Math.random() * 1000000)
-                                        .toString()
-                                        .padStart(6, "0")}
+                                    #{Math.floor(Math.random() * 1000000).toString().padStart(6, "0")}
                                 </span>
                             </div>
                         </div>
@@ -261,5 +253,4 @@ export function BookModal({ book, isOpen, onClose }) {
             </div>
         </div>
     )
-
 }
