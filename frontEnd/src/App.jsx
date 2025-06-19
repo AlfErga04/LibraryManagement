@@ -53,7 +53,7 @@ function App() {
           {/* Halaman Sidebar Profile */}
           <Route path="/profile" element={<UserProfile />} />
           {/* Halaman Sidebar Return-Book */}
-          <Route path="/return-book/:id" element={<ReturnBook />} />
+          <Route path="/return-book" element={<ReturnBook />} />
           {/* Halaman Sidebar Borrow-History */}
           <Route path="/borrow-history" element={<BorrowHistory />} />
           {/* Halaman Sidebar Favorites */}
