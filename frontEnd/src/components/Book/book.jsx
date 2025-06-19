@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { BookModal } from "@/components/item/book-modal";
 import HashLoader from "react-spinners/HashLoader";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function Book() {
   const [books, setBooks] = useState([]);
@@ -16,12 +17,46 @@ export default function Book() {
   const fetchBooks = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/book");
-      const data = response.data.data;
+      const data = response.data.data.map((book) => ({
+        ...book,
+        isFavorited: book.is_favorited || false,
+      }));
       setBooks(data);
     } catch (error) {
       console.error("Error fetching books:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleFavorite = async (e, bookId) => {
+    e.stopPropagation();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://127.0.0.1:8000/api/favorites/toggle/${bookId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message);
+        setBooks((prevBooks) =>
+          prevBooks.map((book) =>
+            book.id === bookId
+              ? { ...book, isFavorited: !book.isFavorited }
+              : book
+          )
+        );
+      } else {
+        const err = await response.json();
+        console.error("Gagal toggle favorit:", err.message || response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
     }
   };
 
@@ -71,7 +106,7 @@ export default function Book() {
           filteredBooks.map((book) => (
             <div
               key={book.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer"
+              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer relative"
               onClick={() => setSelectedBook(book)}
             >
               <img
@@ -79,6 +114,16 @@ export default function Book() {
                 alt={book.judul}
                 className="h-64 w-full object-cover"
               />
+
+              {/* Favorite Icon */}
+              <button
+                onClick={(e) => toggleFavorite(e, book.id)}
+                className="absolute top-2 right-2 text-white text-xl bg-black/40 rounded-full p-2 hover:bg-red-500 transition"
+                title={book.isFavorited ? "Hapus dari favorit" : "Tambahkan ke favorit"}
+              >
+                {book.isFavorited ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+              </button>
+
               <div className="p-4">
                 <h5 className="text-xl font-semibold mb-2">{book.judul}</h5>
                 <p className="text-sm text-gray-600 line-clamp-3">{book.description}</p>
