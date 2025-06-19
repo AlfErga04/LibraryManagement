@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AktivasiEmail;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\EditProfile;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\PengembalianController;
@@ -50,5 +51,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/midtrans-callback', [MidtransController::class, 'handleNotification']);
     Route::get('/pembayaran/status/{order_id}', [PembayaranController::class, 'checkStatus']);
     Route::post('/pembayaran/update-status', [PembayaranController::class, 'updateStatus']);
+
+    Route::put('/edit', [EditProfile::class, 'edit']);
 
 });

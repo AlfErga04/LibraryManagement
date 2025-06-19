@@ -76,8 +76,7 @@ export function BookModal({ book, isOpen, onClose }) {
                     setStatus("Out of Stock");
                 }
             } catch (error) {
-                console.error("Error while sending data to backend:", error);
-                alert(error.response?.data?.message || "Gagal meminjam buku. Silakan coba lagi.");
+                window.location.pathname = '/login';
             }
         }
 
@@ -139,7 +138,7 @@ export function BookModal({ book, isOpen, onClose }) {
                             <div className="grid grid-cols-2 gap-2 mb-4">
                                 <div className="bg-stone-50 p-2 rounded-lg">
                                     <h3 className="text-xs font-medium text-slate-700 mb-1">Stock</h3>
-                                    <p className="text-base font-medium text-slate-800">{stock} copies</p>
+                                    <p className="text-base font-medium text-slate-800">{book.stok} copies</p>
                                 </div>
                                 <div className="bg-stone-50 p-2 rounded-lg">
                                     <h3 className="text-xs font-medium text-slate-700 mb-1">Status</h3>
@@ -152,9 +151,9 @@ export function BookModal({ book, isOpen, onClose }) {
                             <Button
                                 className="w-full bg-amber-300 hover:bg-amber-400 text-slate-900 font-medium py-3 text-sm"
                                 onClick={handleBorrow}
-                                disabled={stock === 0}
+                                disabled={book.stok === 0}
                             >
-                                {stock > 0 ? "Borrow Now" : "Currently Unavailable"}
+                                {book.stok > 0 ? "Borrow Now" : "Currently Unavailable"}
                             </Button>
                         </div>
                     </>

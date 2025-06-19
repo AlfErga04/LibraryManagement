@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import './login.css';
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Login({ setIsLoggedIn, setUser }) {
   const [email, setEmail] = useState("");
@@ -67,8 +68,10 @@ function Login({ setIsLoggedIn, setUser }) {
             required
           />
         </div>
+        <p><Link to="/forgot-password">Forgot password?</Link></p>
         {message && <div className="alert alert-info">{message}</div>}
         <button type="submit" className="btn btn-primary">Login</button>
+        <p style={{ marginTop: "10px" }}>Don't have an account? <Link to="/register">Sign Up</Link></p>
       </form>
     </div>
   );
