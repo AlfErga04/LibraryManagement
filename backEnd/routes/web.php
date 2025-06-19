@@ -8,10 +8,6 @@ Route::get('/', function () {
     return view('welcome');
 })->middleware(DirectAdmin::class);
 
-Route::get('/midtrans-test', function() {
-    return response()->json([
-        'status' => 'ok',
-        'message' => 'Endpoint dapat diakses',
-        'time' => now()
-    ]);
-});
+
+// Route::get('/activate/{token}', [AuthController::class, 'activate'])->name('activate');
+

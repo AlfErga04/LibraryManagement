@@ -67,13 +67,22 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPassword($token));
+        $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+        $resetUrl = "$frontendUrl/reset-password?token=$token&email=" . $this->email;
+
+        $this->notify(new ResetPassword($resetUrl));
     }
 
     public function favoriteBooks()
+<<<<<<< HEAD
 {
     return $this->belongsToMany(Book::class, 'favorites', 'user_id', 'book_id');
 }
 
 
+=======
+    {
+        return $this->belongsToMany(Book::class, 'favorites')->withTimestamps();
+    }
+>>>>>>> hore
 }

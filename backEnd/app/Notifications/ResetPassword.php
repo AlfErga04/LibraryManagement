@@ -12,13 +12,14 @@ class ResetPassword extends Notification
     use Queueable;
 
     public $token;
+    public $resetUrl;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($token)
+    public function __construct($resetUrl)
     {
-        $this->token = $token;
+        $this->resetUrl = $resetUrl;
     }
 
     /**
@@ -39,11 +40,11 @@ class ResetPassword extends Notification
         $resetUrl = url('/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->email));
 
         return (new MailMessage)
-            ->subject('Reset Password Akun Anda')
-            ->greeting('Halo,')
-            ->line('Kami menerima permintaan untuk mengatur ulang kata sandi Anda.')
-            ->action('Reset Password', $resetUrl)
-            ->line('Jika Anda tidak meminta reset password, abaikan email ini.');
+            ->subject('Reset Password')
+            ->line('Anda menerima email ini karena permintaan reset password.')
+            ->action('Reset Password', $this->resetUrl)
+            ->line('Link berlaku 60 menit.')
+            ->line('Jika Anda tidak meminta reset, abaikan email ini.');
     }
 
     /**
