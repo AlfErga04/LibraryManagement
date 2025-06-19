@@ -16,6 +16,9 @@ import BorrowHistory from "./components/BorrowHistory/BorrowHistory";
 import Favorites from "./components/Favorites/Favorites";
 import About from "./components/About/about";
 import PaymentCallback from "./components/BorrowHistory/PaymentCallback";
+import SendEmail from "./components/ResetPassword/sendEmail";
+import ResetPassword from "./components/ResetPassword/ResetPassword";
+import AccountActivation from "./components/Login/aktivasi";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,6 +51,10 @@ function App() {
             element={<Login setIsLoggedIn={setIsLoggedIn} setUser={setUser} />}
           />
           <Route path="/register" element={<SignUp />} />
+          <Route path="/login/activate/:token" element={<AccountActivation />} />
+
+          <Route path="/forgot-password" element={<SendEmail />} />
+          <Route path="/login/reset-password" element={<ResetPassword />} />
           {/* Halaman Navbar About Perpus */}
           <Route path="/about" element={<About />} />
           {/* Halaman Sidebar Profile */}
