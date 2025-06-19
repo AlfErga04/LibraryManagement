@@ -74,15 +74,9 @@ class User extends Authenticatable
     }
 
     public function favoriteBooks()
-<<<<<<< HEAD
 {
     return $this->belongsToMany(Book::class, 'favorites', 'user_id', 'book_id');
 }
 
 
-=======
-    {
-        return $this->belongsToMany(Book::class, 'favorites')->withTimestamps();
-    }
->>>>>>> hore
 }
