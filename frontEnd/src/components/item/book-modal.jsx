@@ -78,14 +78,10 @@ export function BookModal({ book, isOpen, onClose }) {
                     setStatus("Out of Stock")
                 }
             } catch (error) {
-<<<<<<< HEAD
                 console.error("Error while sending data to backend:", error)
                 alert(error?.response?.data?.message || "Gagal meminjam buku. Silakan coba lagi.")
             } finally {
                 setIsLoading(false)
-=======
-
->>>>>>> hore
             }
         }
     }
