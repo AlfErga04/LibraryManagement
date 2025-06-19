@@ -1,6 +1,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useState } from "react";
 import { BookModal } from "@/components/item/book-modal";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export function BookCollection({ books }) {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -36,8 +37,38 @@ export function BookCollection({ books }) {
 }
 
 function BookCard({ book, onClick }) {
-   return (
-    <Card className="group overflow-hidden rounded-xl border-none transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shadow-lg h-full" onClick={onClick}>
+  const [isFavorited, setIsFavorited] = useState(book.is_favorited || false);
+
+  const toggleFavorite = async (e) => {
+    e.stopPropagation(); // Hindari buka modal saat klik icon love
+    try {
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8000/api/favorites/toggle/${book.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message);
+        setIsFavorited((prev) => !prev);
+      } else {
+        console.error("Gagal toggle favorit");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
+
+  return (
+    <Card
+      className="group overflow-hidden rounded-xl border-none transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shadow-lg h-full relative cursor-pointer"
+      onClick={onClick}
+    >
       <div className="relative h-56 overflow-hidden">
         <img
           src={book.image ? `http://localhost:8000/storage/${book.image}` : "/placeholder.svg"}
@@ -45,6 +76,17 @@ function BookCard({ book, onClick }) {
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+
+        {/* Ikon Love */}
+        <div className="absolute top-2 right-2 z-10">
+          <button
+            onClick={toggleFavorite}
+            className="text-white text-xl bg-black/40 rounded-full p-2 hover:bg-red-500 transition"
+            title={isFavorited ? "Hapus dari favorit" : "Tambahkan ke favorit"}
+          >
+            {isFavorited ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+          </button>
+        </div>
       </div>
 
       <CardContent className="p-6 bg-white">
@@ -55,12 +97,8 @@ function BookCard({ book, onClick }) {
       </CardContent>
 
       <CardFooter className="flex justify-between border-t border-stone-100 bg-stone-50 px-6 py-3 text-sm text-slate-500 mt-auto">
-        <span className="flex items-center">
-          <span className="mr-1 text-amber-400"></span> {book.category}
-        </span>
-        <span className="flex items-center">
-          <span className="mr-1 text-amber-400"></span> stok: {book.stok}
-        </span>
+        <span>{book.category}</span>
+        <span>Stok: {book.stok}</span>
       </CardFooter>
     </Card>
   );

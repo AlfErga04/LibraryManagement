@@ -23,8 +23,12 @@ function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn, u
         <Nav className="flex-column">
           {!isLoggedIn ? (
             <>
-              <Nav.Link as={Link} to="/login" onClick={handleSidebarClose}>Login</Nav.Link>
-              <Nav.Link as={Link} to="/register" onClick={handleSidebarClose}>Sign Up</Nav.Link>
+              <Nav.Link as={Link} to="/login" onClick={handleSidebarClose}>
+                Login
+              </Nav.Link>
+              <Nav.Link as={Link} to="/register" onClick={handleSidebarClose}>
+                Sign Up
+              </Nav.Link>
             </>
           ) : (
             <>
@@ -41,24 +45,38 @@ function Sidebar({ showSidebar, handleSidebarClose, isLoggedIn, setIsLoggedIn, u
                 </div>
               </div>
 
-              <Nav.Link as={Link} to="/profile" onClick={handleSidebarClose}>👤 Profil</Nav.Link>
-              <Nav.Link as={Link} to="/borrow-history" onClick={handleSidebarClose} className="text-primary fw-semibold">
-                📚 Riwayat Peminjaman
+              <Nav.Link as={Link} to="/profile" onClick={handleSidebarClose}>
+                👤 Profil
               </Nav.Link>
+
               <Nav.Link
                 as={Link}
-                to="/return-book/102"
+                to="/borrow-history"
+                onClick={handleSidebarClose}
+                className="text-primary fw-semibold"
+              >
+                📚 Riwayat Peminjaman
+              </Nav.Link>
+
+              <Nav.Link
+                as={Link}
+                to="/return-book"
                 onClick={handleSidebarClose}
                 className="text-primary fw-semibold"
               >
                 ⏰ Jadwal Pengembalian
               </Nav.Link>
-              <Nav.Link as={Link} to="/favorites" onClick={handleSidebarClose}>⭐ Favorit</Nav.Link>
 
               <Nav.Link
-                onClick={() => {
-                  handleLogout();
-                }}
+                as={Link}
+                to="/favorites"
+                onClick={handleSidebarClose}
+              >
+                ⭐ Favorit
+              </Nav.Link>
+
+              <Nav.Link
+                onClick={handleLogout}
                 className="text-danger fw-semibold"
               >
                 🚪 Logout
