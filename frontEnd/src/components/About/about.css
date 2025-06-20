@@ -1,0 +1,58 @@
+body {
+  background-color: #f0f4f8;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.heading-primary {
+  color: #1A237E; /* biru navy khas sekolah */
+  font-weight: 700;
+}
+
+.heading-secondary {
+  color: #FFD600; /* kuning emas */
+}
+
+.subheading {
+  color: #1A237E;
+  font-weight: 600;
+}
+
+.card-custom {
+  background-color: #ffffff;
+  border-left: 6px solid #1A237E;
+  border-radius: 1rem;
+}
+
+.text-body {
+  color: #4a4a4a;
+  font-size: 1rem;
+}
+
+.list-group-item {
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.accordion-custom .accordion-button:not(.collapsed) {
+  color: #1A237E;
+  background-color: #e8f0fe;
+}
+
+.accordion-custom .accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-custom .accordion-body {
+  background-color: #ffffff;
+  color: #444;
+}
+
+.faq-section {
+  background-color: #ffffff;
+  border-left: 6px solid #FFD600;
+}
+
+

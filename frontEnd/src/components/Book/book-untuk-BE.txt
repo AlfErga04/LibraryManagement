@@ -1,0 +1,92 @@
+import React, { useState, useEffect } from 'react';
+import './book.css';
+
+const Book = () => {
+  const [books, setBooks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Fetch data buku dari backend
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await fetch('https://api.example.com/books'); // Ganti dengan URL API Anda
+        const data = await response.json();
+        setBooks(data);
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+
+  // Filter buku berdasarkan pencarian
+  const filteredBooks = books.filter((book) =>
+    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleResetSearch = () => {
+    setSearchTerm('');
+  };
+
+  return (
+    <div className="container mt-5">
+      <h2 className="mb-4 text-center title-spacing">📚 Daftar Buku</h2>
+
+      {/* Pencarian */}
+      <div className="search-section mb-5 p-4 shadow-sm bg-light rounded">
+        <div className="row align-items-center">
+          <div className="col-md-9">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="🔍 Cari buku berdasarkan judul..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="col-md-3 mt-2 mt-md-0">
+            <button
+              className="btn btn-outline-danger w-100"
+              onClick={handleResetSearch}
+              disabled={!searchTerm}
+            >
+              Reset Pencarian
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Daftar Buku */}
+      <div className="row">
+        {filteredBooks.length > 0 ? (
+          filteredBooks.map((book) => (
+            <div className="col-md-4 mb-4" key={book.id}>
+              <div className="card book-card h-100 shadow-sm rounded">
+                <img
+                  src={book.image}
+                  className="card-img-top"
+                  alt={book.title}
+                  style={{ height: '250px', objectFit: 'cover' }}
+                />
+                <div className="card-body">
+                  <h5 className="card-title">{book.title}</h5>
+                  <p className="card-text">{book.description}</p>
+                </div>
+                <div className="card-footer text-muted">
+                  {book.author} - {book.year}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-muted text-center">
+            Tidak ada buku yang cocok dengan pencarian.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Book;
